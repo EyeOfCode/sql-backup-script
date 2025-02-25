@@ -1,0 +1,14 @@
+services:
+  backup-db:
+    build: .
+    container_name: sql-backup
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    networks:
+      - backup-network
+
+networks:
+  backup-network:
+    driver: bridge

@@ -25,6 +25,6 @@
 
 - cron set on Dockerfile
 - firebase config on .env
-- dir local and firebase on key BACKUP_PATH
+- dir firebase on key BACKUP_PATH
 - max file on firebase on key MAX_FILE
 - when NODE=development run on local but NODE=production run on docker

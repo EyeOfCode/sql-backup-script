@@ -1,41 +1,39 @@
-FROM ubuntu:20.04
-
-# Install necessary packages
-RUN apt-get update && \
-    apt-get install -y \
-    curl \
-    bash \
-    mysql-client \
-    cron \
-    gnupg2 \
-    lsb-release \
-    ca-certificates && \
-    # Install Node.js (which includes npm)
-    curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
-    apt-get install -y nodejs && \
-    # Install firebase-tools globally
-    npm install -g firebase-tools && \
-    # Clean up apt lists and npm cache to reduce image size
-    rm -rf /var/lib/apt/lists/* && \
-    npm cache clean --force
+# Use a lightweight Alpine Linux base image
+FROM python:3.9-alpine
 
 # Set working directory
 WORKDIR /app
 
-# Copy the backup script and .env to the container
+# Copy necessary files to the container
 COPY . /app
-COPY .env /app/.env
 
-# Make the backup script executable
-RUN chown -R root:root /app
-RUN chmod 755 /app/script.sh
-RUN chmod 644 /app/.env
+# Install dependencies (including dcron for cron jobs)
+RUN apk update && \
+    apk add --no-cache \
+    mysql-client \
+    bash \
+    curl \
+    jq \
+    git \
+    python3 \
+    py3-pip \
+    libmagic \
+    nodejs \
+    npm \
+    dos2unix \
+    dcron && \
+    echo "Basic dependencies and dcron installed successfully."
 
-# Set up cron job to run backup and log output to stdout/stderr
-RUN echo "* * * * * /bin/bash /app/script.sh >> /dev/stdout 2>> /dev/stderr" > /etc/cron.d/backup-job
-RUN chmod 0644 /etc/cron.d/backup-job
-RUN chown root:root /etc/cron.d/backup-job
-RUN crontab /etc/cron.d/backup-job
+# Make the script executable
+RUN chmod +x /app/backups_db && chmod -R 777 /app/backups_db
+RUN chmod +x /app/.env
+RUN chmod +x /app/script.sh && dos2unix /app/script.sh
 
-# Start cron in the foreground
-CMD ["cron", "-f"]
+# Add the cron job to run the script every 03:00 AM
+RUN touch /var/log/cron.log
+RUN chmod 0644 /var/log/cron.log
+RUN echo "0 3 * * * /bin/bash /app/script.sh >> /var/log/cron.log 2>&1" > /etc/crontabs/root
+RUN crond
+
+# Start dcron (cron daemon) in the background
+CMD ["sh", "-c", "crond && tail -f /dev/null"]

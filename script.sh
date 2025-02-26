@@ -15,10 +15,8 @@ fi
 
 # Step 1: Backup MySQL database in Docker container
 echo "Starting MySQL backup..."
-set -x
 DATE=$(date +"%Y%m%d%H%M%S")
 mariadb-dump --ssl=false -h $DB_HOST -u $DB_USER -p$DB_PASS $DB_NAME > "$DIR_BACKUP/backup_${DB_NAME}_$DATE.sql"
-set -x
 echo "Backup backups_db/backup_${DB_NAME}_$DATE.sql local successfully."
 
 # Step 2: Delay before uploading (e.g., sleep for 5 minutes)

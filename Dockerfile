@@ -36,4 +36,4 @@ RUN echo "0 3 * * * /bin/bash /app/script.sh >> /var/log/cron.log 2>&1" > /etc/c
 RUN crond
 
 # Start dcron (cron daemon) in the background
-CMD ["sh", "-c", "crond && tail -f /dev/null"]
+CMD ["sh", "-c", "crond -f -l 2 && tail -f /var/log/cron.log"]

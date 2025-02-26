@@ -26,19 +26,18 @@ const dirPath = path.join(__dirname, "backups_db");
 
 async function deleteOldFilesIfNecessary() {
   const listRef = ref(storage, `${process.env.BACKUP_PATH}/`);
-  if (!listRef) {
-    console.error("Error: listRef is undefined.");
-    return;
-  }
 
   try {
+    console.log(
+      `Deleting old files on firebase on dir ${process.env.BACKUP_PATH}/...`
+    );
     const fileList = await listAll(listRef);
     if (!fileList || !fileList.items || fileList.items.length === 0) {
       console.error("No files available for deletion.");
       return;
     }
 
-    const maxFiles = parseInt(process.env.MAX_FILES, 3);
+    const maxFiles = Number(process.env.MAX_FILES) || 3;
 
     if (fileList.items.length >= maxFiles) {
       fileList.items.sort((a, b) => a.name.localeCompare(b.name));

@@ -2,6 +2,7 @@ services:
   backup-db:
     build: .
     container_name: sql-backup
+    restart: always
     env_file:
       - .env
     volumes:

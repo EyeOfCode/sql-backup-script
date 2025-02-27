@@ -31,7 +31,7 @@ COPY . /app/
 # Make the script executable and ensure the correct permissions for all files
 RUN chmod -R 777 /app
 
-# Add the cron job to run the script every minute (you can change this to run at 3:00 AM by adjusting the cron pattern)
+# Add the cron job to run the script every minute (you can change this to run at 3:00 PM by adjusting the cron pattern)
 RUN touch /var/log/cron.log && chmod 0644 /var/log/cron.log
 RUN echo "0 15 * * * /bin/bash /app/script.sh >> /var/log/cron.log 2>&1" > /etc/crontabs/root
 

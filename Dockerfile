@@ -32,7 +32,7 @@ RUN chmod +x /app/script.sh && dos2unix /app/script.sh
 # Add the cron job to run the script every 03:00 AM
 RUN touch /var/log/cron.log
 RUN chmod 0644 /var/log/cron.log
-RUN echo "0 3 * * * /bin/bash /app/script.sh >> /var/log/cron.log 2>&1" > /etc/crontabs/root
+RUN echo "0 12 * * * /bin/bash /app/script.sh >> /var/log/cron.log 2>&1" > /etc/crontabs/root
 RUN crond
 
 # Start dcron (cron daemon) in the background

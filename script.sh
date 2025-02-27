@@ -38,6 +38,11 @@ fi
 # Confirm upload
 if [ $? -eq 0 ]; then
   echo "Backup uploaded successfully to Firebase."
+  if [ -n "$SLACK_WEB_HOOK" ]; then
+    node /app/notify.js
+  else
+    node notify.js
+  fi
 else
   echo "Failed to upload the backup."
 fi

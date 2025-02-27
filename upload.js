@@ -51,6 +51,7 @@ async function deleteOldFilesIfNecessary() {
 }
 
 fs.readdir(dirPath, (err, files) => {
+  console.log(`Upload files on date: ${new Date().toISOString()}...`);
   if (err) {
     console.error("Error reading directory:", err);
     return;
